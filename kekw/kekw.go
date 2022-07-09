@@ -12,7 +12,13 @@ import (
 //go:embed resources/kekw.png
 var kekwImageData []byte
 
-func Kekw(c *fiber.Ctx, angle int) error {
+func KekwStatic(c *fiber.Ctx) error {
+	c.Response().Header.Add("Content-Type", "image/png")
+	_, err := c.Write(kekwImageData)
+	return err
+}
+
+func KekwAngle(c *fiber.Ctx, angle int) error {
 	srcImage, _ := imaging.Decode(bytes.NewReader(kekwImageData))
 	rotatedImage := imaging.Rotate(srcImage, float64(angle), color.Transparent)
 	c.Response().Header.Add("Content-Type", "image/png")
@@ -20,5 +26,5 @@ func Kekw(c *fiber.Ctx, angle int) error {
 }
 
 func KekwRandom(c *fiber.Ctx) error {
-	return Kekw(c, rand.Intn(360))
+	return KekwAngle(c, rand.Intn(360))
 }

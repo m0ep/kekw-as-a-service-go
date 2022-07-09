@@ -9,7 +9,11 @@ import (
 func main() {
 	app := fiber.New()
 
-	app.Add("GET", "/", func(c *fiber.Ctx) error {
+	app.Add("GET", "/health", func(c *fiber.Ctx) error {
+		return c.SendString("🚀👍")
+	}).Add("GET", "/favicon.ico", func(c *fiber.Ctx) error {
+		return kekw.KekwStatic(c)
+	}).Add("GET", "/", func(c *fiber.Ctx) error {
 		angleQuery := c.Query("angle", "")
 
 		if "" == angleQuery {
@@ -20,30 +24,15 @@ func main() {
 				angle = 0
 			}
 
-			return kekwFromAngle(c, angle)
-		}
+			if -359 > angle {
+				angle = -359
+			} else if 359 < angle {
+				angle = 359
+			}
 
-	})
-	app.Add("GET", "/:angle", func(c *fiber.Ctx) error {
-		angleParam := c.Params("angle", "0")
-		angle, err := strconv.Atoi(angleParam)
-		if nil != err {
-			angle = 0
+			return kekw.KekwAngle(c, angle)
 		}
-
-		return kekwFromAngle(c, angle)
 	})
 
 	_ = app.Listen(":3000")
-}
-
-func kekwFromAngle(c *fiber.Ctx, angle int) error {
-	switch {
-	case -359 > angle:
-		angle = -359
-	case 359 < angle:
-		angle = 359
-	}
-
-	return kekw.Kekw(c, angle)
 }
