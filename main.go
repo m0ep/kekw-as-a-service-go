@@ -9,11 +9,11 @@ import (
 func main() {
 	app := fiber.New()
 
-	app.Add("GET", "/health", func(c *fiber.Ctx) error {
+	app.Get("/health", func(c *fiber.Ctx) error {
 		return c.SendString("🚀👍")
-	}).Add("GET", "/favicon.ico", func(c *fiber.Ctx) error {
+	}).Get("/favicon.ico", func(c *fiber.Ctx) error {
 		return kekw.KekwStatic(c)
-	}).Add("GET", "/", func(c *fiber.Ctx) error {
+	}).Get("/", func(c *fiber.Ctx) error {
 		angleQuery := c.Query("angle", "")
 
 		if "" == angleQuery {
